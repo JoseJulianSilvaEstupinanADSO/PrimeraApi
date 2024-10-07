@@ -33,9 +33,12 @@ public class UserImplService implements IUserService{
         User user = User.builder()
                     .id(userDto.getId())
                     .name(userDto.getName())
-                    .last_name(userDto.getLast_name())
                     .email(userDto.getEmail())
-                    .date_register(userDto.getDate_register())
+                    .user(userDto.getUser())
+                    .password(userDto.getPassword())
+                    .documento(userDto.getDocumento())
+                    .telefono(userDto.getTelefono())
+                    .edad(userDto.getEdad())
                     .build();
        return userDao.save(user);
     }

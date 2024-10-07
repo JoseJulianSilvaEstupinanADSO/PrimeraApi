@@ -7,9 +7,8 @@ import com.jjse.model.entity.User;
 import com.jjse.model.pyload.MessageResponse;
 import com.jjse.service.IUserService;
 
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 
@@ -69,9 +66,12 @@ public class UserController {
                                 .object(UserDto.builder()
                                     .id(userSave.getId())
                                     .name(userSave.getName())
-                                    .last_name(userSave.getLast_name())
                                     .email(userSave.getEmail())
-                                    .date_register(userSave.getDate_register())
+                                    .user(userSave.getUser())
+                                    .password(userSave.getPassword())
+                                    .documento(userSave.getDocumento())
+                                    .telefono(userSave.getTelefono())
+                                    .edad(userSave.getEdad())
                                     .build())
                                 .build()
                             ,HttpStatus.CREATED); 
@@ -103,9 +103,12 @@ public class UserController {
                                     .object(UserDto.builder()
                                         .id(userUpdate.getId())
                                         .name(userUpdate.getName())
-                                        .last_name(userUpdate.getLast_name())
                                         .email(userUpdate.getEmail())
-                                        .date_register(userUpdate.getDate_register())
+                                        .user(userUpdate.getUser())
+                                        .password(userUpdate.getPassword())
+                                        .documento(userUpdate.getDocumento())
+                                        .telefono(userUpdate.getTelefono())
+                                        .edad(userUpdate.getEdad())
                                         .build())
                                     .build()
                                 ,HttpStatus.CREATED); 
@@ -132,7 +135,6 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deleteeUser(@PathVariable Integer id){
         try {
 
@@ -171,9 +173,12 @@ public class UserController {
                         .object(UserDto.builder()
                             .id(user.getId())
                             .name(user.getName())
-                            .last_name(user.getLast_name())
                             .email(user.getEmail())
-                            .date_register(user.getDate_register())
+                            .user(user.getUser())
+                            .password(user.getPassword())
+                            .documento(user.getDocumento())
+                            .telefono(user.getTelefono())
+                            .edad(user.getEdad())
                             .build())
                         .build()
             ,HttpStatus.OK);
