@@ -9,13 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jjse.model.dao.RolDao;
 import com.jjse.model.dto.ProductDto;
-import com.jjse.model.entity.Product;
+import com.jjse.model.dto.RolDto;
+import com.jjse.model.entity.Rol;
 import com.jjse.model.pyload.MessageResponse;
-import com.jjse.service.IProductService;
+import com.jjse.service.IRolService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,52 +27,47 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
-
-
 @RestController
-@RequestMapping("/products")
-public class ProductController {
-
+@RequestMapping("/roles")
+public class RolController {
 
     @Autowired
-    private IProductService productService;
+    private IRolService rolService;
 
     @GetMapping
     public ResponseEntity<?> showAll() {
-        
-        List<Product> geList = productService.listALL();
-        if (geList.size() <= 0) {
-            
+        List<Rol> getList = rolService.listALL();
+
+        if (getList.size() <=0) {
             return new ResponseEntity<>(
                             MessageResponse.builder()
-                                        .message("No hay Productos registrados")
+                                        .message("No hay Roles registrados")
                                         .object(null)
                                         .build(),
-                                        HttpStatus.OK);       
+                                        HttpStatus.OK);    
         }
-
         return new ResponseEntity<>(
             MessageResponse.builder()
-                            .message("Registros encontrados")
-                            .object(geList)
+                            .message("Roles encontrados")
+                            .object(getList)
                             .build(),
                             HttpStatus.OK);
     }
-    
+
     @PostMapping
-    public ResponseEntity<?> registerProduct(@RequestBody ProductDto  productDto) {
-       
-        Product productSave = null;
+    public ResponseEntity<?> registerRol(@RequestBody RolDto rolDto) {
+        
+        Rol rolSave = null;
 
         try {
             
-            productSave = productService.save(productDto);
+            rolSave = rolService.save(rolDto);
             return new ResponseEntity<>(
                             MessageResponse.builder()
-                            .message("Producto guardado")
-                            .object(ProductDto.builder()
-                                .name(productSave.getName())
-                                .build())
+                                .message("Rol registrado correctamente")
+                                .object(RolDto.builder()
+                                    .name(rolSave.getName())
+                                    .build())
                             .build(),
                             HttpStatus.CREATED);
 
@@ -81,29 +79,28 @@ public class ProductController {
                                         .build()
                             ,HttpStatus.METHOD_NOT_ALLOWED);
         }
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody ProductDto productDto) {
         
-        Product productUpdate = null;
-        try {
+    }
 
-            if (productService.existsById(id)) {
-                productDto.setId(id);
-                productUpdate = productService.save(productDto);
+    @PutMapping("/{id}")
+    public ResponseEntity putMethodName(@PathVariable Integer id, @RequestBody RolDto rolDto) {
+        
+        Rol rolUpdate = null;
+
+        try {
+            
+            if (rolService.existsById(id)) {
+                rolDto.setId(id);
+                rolUpdate = rolService.save(rolDto);
                 return new ResponseEntity<>(
                                 MessageResponse.builder()
-                                    .message("Producto Actualizado")
-                                    .object(ProductDto.builder()
-                                        .id(productUpdate.getId())
-                                        .name(productUpdate.getName())
-                                        .precio(productUpdate.getPrecio())
-                                        .state(productUpdate.getState())
-                                        .talla(productUpdate.getTalla())
+                                    .message("Rol modificado")
+                                    .object(RolDto.builder()
+                                        .id(rolUpdate.getId())
+                                        .name( rolUpdate.getName())
                                         .build())
-                                    .build()
-                                ,HttpStatus.CREATED);   
+                                    .build(),
+                                HttpStatus.CREATED);
             }
             else{
                 return new ResponseEntity<>(
@@ -113,7 +110,6 @@ public class ProductController {
                                         .build()
                             ,HttpStatus.NOT_FOUND);    
             }
-            
 
         } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
@@ -123,17 +119,18 @@ public class ProductController {
                                         .build()
                             ,HttpStatus.METHOD_NOT_ALLOWED);
         }
+        
     }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer id){
+    public ResponseEntity<?> deleteRol(@PathVariable Integer id){
+
         try {
             
-            Product productDelete = productService.findById(id);
-            productService.delete(productDelete);
+            Rol rolDelete = rolService.findById(id);
+            rolService.delete(rolDelete);
 
-            return new ResponseEntity<>(productDelete, HttpStatus.NO_CONTENT);
-
+            return new ResponseEntity<>(rolDelete, HttpStatus.NO_CONTENT);
+        
         } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
                             MessageResponse.builder()
@@ -143,11 +140,13 @@ public class ProductController {
                             ,HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
+    
     @GetMapping("/{id}")
     public ResponseEntity<?> showByid(@PathVariable Integer id) {
-        Product product = productService.findById(id);
+        
+        Rol rol = rolService.findById(id);
 
-        if (product == null) {
+        if (rol == null) {
             return new ResponseEntity<>(
                 MessageResponse.builder()
                             .message("El registro que intenta buscar no existe")
@@ -158,12 +157,9 @@ public class ProductController {
 
         return new ResponseEntity<>(
             MessageResponse.builder()
-                        .message("Usuario encontrado")
-                        .object(ProductDto.builder()
-                            .id(product.getId())
-                            .name(product.getName())
-                            .precio(product.getPrecio())
-                            .state(product.getState())
+                        .message("Rol encontrado")
+                        .object(RolDto.builder()
+                            .name(rol.getName())
                             .build())
                         .build(),
             HttpStatus.OK);

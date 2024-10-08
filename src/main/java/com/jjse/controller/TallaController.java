@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jjse.model.dto.ProductDto;
-import com.jjse.model.entity.Product;
+import com.jjse.model.dto.TallaDto;
+import com.jjse.model.entity.Talla;
 import com.jjse.model.pyload.MessageResponse;
-import com.jjse.service.IProductService;
+import com.jjse.service.ITallaService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,51 +24,47 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
-
-
 @RestController
-@RequestMapping("/products")
-public class ProductController {
-
+@RequestMapping("/tallas")
+public class TallaController {
 
     @Autowired
-    private IProductService productService;
+    private ITallaService tallaService;
 
     @GetMapping
     public ResponseEntity<?> showAll() {
-        
-        List<Product> geList = productService.listALL();
-        if (geList.size() <= 0) {
-            
+        List<Talla> getList = tallaService.listAll();
+
+        if (getList.size() <= 0) {
             return new ResponseEntity<>(
                             MessageResponse.builder()
                                         .message("No hay Productos registrados")
                                         .object(null)
                                         .build(),
-                                        HttpStatus.OK);       
+                                        HttpStatus.OK);  
         }
 
         return new ResponseEntity<>(
             MessageResponse.builder()
                             .message("Registros encontrados")
-                            .object(geList)
+                            .object(getList)
                             .build(),
                             HttpStatus.OK);
     }
     
     @PostMapping
-    public ResponseEntity<?> registerProduct(@RequestBody ProductDto  productDto) {
-       
-        Product productSave = null;
-
+    public ResponseEntity<?> registerTalla(@RequestBody TallaDto talla) {
+        
+        Talla tallaSave = null;
+        
         try {
             
-            productSave = productService.save(productDto);
+            tallaSave = tallaService.save(talla);
             return new ResponseEntity<>(
                             MessageResponse.builder()
-                            .message("Producto guardado")
-                            .object(ProductDto.builder()
-                                .name(productSave.getName())
+                            .message("Talla guardado")
+                            .object(TallaDto.builder()
+                                .tipo(tallaSave.getTipo())
                                 .build())
                             .build(),
                             HttpStatus.CREATED);
@@ -82,38 +78,34 @@ public class ProductController {
                             ,HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody ProductDto productDto) {
-        
-        Product productUpdate = null;
-        try {
 
-            if (productService.existsById(id)) {
-                productDto.setId(id);
-                productUpdate = productService.save(productDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTalla(@PathVariable Integer id, @RequestBody TallaDto tallaDto) {
+        
+        Talla tallaUpdate = null;
+
+        try {
+            
+            if (tallaService.existsById(id)) {
+                tallaDto.setId(id);
+                tallaUpdate = tallaService.save(tallaDto);
                 return new ResponseEntity<>(
                                 MessageResponse.builder()
-                                    .message("Producto Actualizado")
-                                    .object(ProductDto.builder()
-                                        .id(productUpdate.getId())
-                                        .name(productUpdate.getName())
-                                        .precio(productUpdate.getPrecio())
-                                        .state(productUpdate.getState())
-                                        .talla(productUpdate.getTalla())
+                                    .message("Talla actualizada")
+                                    .object(TallaDto.builder()
+                                        .tipo(tallaUpdate.getTipo())
                                         .build())
-                                    .build()
-                                ,HttpStatus.CREATED);   
+                                    .build(),
+                            HttpStatus.CREATED);
             }
             else{
                 return new ResponseEntity<>(
                             MessageResponse.builder()
-                                        .message("El Producto no fue encontrando")
+                                        .message("La talla no fue encontrando")
                                         .object(null)
                                         .build()
                             ,HttpStatus.NOT_FOUND);    
-            }
-            
+            }    
 
         } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
@@ -126,14 +118,12 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer id){
+    public ResponseEntity<?> deleteTalla(@PathVariable Integer id){
         try {
             
-            Product productDelete = productService.findById(id);
-            productService.delete(productDelete);
-
-            return new ResponseEntity<>(productDelete, HttpStatus.NO_CONTENT);
-
+            Talla tallaDelete = tallaService.findById(id);
+            tallaService.delete(tallaDelete);
+            return new ResponseEntity<>(tallaDelete,HttpStatus.NO_CONTENT);
         } catch (DataAccessException exDt) {
             return new ResponseEntity<>(
                             MessageResponse.builder()
@@ -143,31 +133,6 @@ public class ProductController {
                             ,HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<?> showByid(@PathVariable Integer id) {
-        Product product = productService.findById(id);
-
-        if (product == null) {
-            return new ResponseEntity<>(
-                MessageResponse.builder()
-                            .message("El registro que intenta buscar no existe")
-                            .object(null)
-                            .build()
-                ,HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(
-            MessageResponse.builder()
-                        .message("Usuario encontrado")
-                        .object(ProductDto.builder()
-                            .id(product.getId())
-                            .name(product.getName())
-                            .precio(product.getPrecio())
-                            .state(product.getState())
-                            .build())
-                        .build(),
-            HttpStatus.OK);
-    }
     
-    
+
 }

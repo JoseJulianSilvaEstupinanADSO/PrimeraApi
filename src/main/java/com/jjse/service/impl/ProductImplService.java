@@ -31,6 +31,8 @@ public class ProductImplService implements IProductService{
                            .name(productDto.getName())
                            .precio(productDto.getPrecio())
                            .state(productDto.getState())
+                           .stock(productDto.getStock())
+                           .talla(productDto.getTalla())
                            .build();
         return productDao.save(product);
     }
