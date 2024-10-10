@@ -1,7 +1,10 @@
 package com.jjse.model.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +20,5 @@ public class RolDto implements Serializable {
 
     private String name;
 
-    private Set<PermisoDto> permisos;
+    private List<PermisoDto> permisos;
 }

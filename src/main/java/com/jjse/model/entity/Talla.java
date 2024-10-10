@@ -3,6 +3,8 @@ package com.jjse.model.entity;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,5 +33,6 @@ public class Talla implements Serializable{
     @Column(name = "tipo")
     private String tipo;
     @OneToMany(mappedBy = "talla")  // Relación inversa, muchos productos pueden tener esta talla
+    @JsonBackReference
     private Set<Product> products;  // Productos que usan esta talla
 }

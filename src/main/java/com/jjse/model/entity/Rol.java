@@ -2,7 +2,11 @@ package com.jjse.model.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +27,7 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "users")
 @Entity
 @Builder
 @Table(name = "roles")
@@ -36,11 +40,17 @@ public class Rol implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
         name = "role_permission",
         joinColumns = @JoinColumn(name = "id_rol"),
         inverseJoinColumns = @JoinColumn(name = "id_permission")
     )
-    private Set<Permiso> permisos = new HashSet<>();
+    @JsonManagedReference
+    private List<Permiso> permisos;
+
+    
+    @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
+    private List<User> users;
 }

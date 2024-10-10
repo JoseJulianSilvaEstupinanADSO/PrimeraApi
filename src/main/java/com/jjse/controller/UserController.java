@@ -54,16 +54,16 @@ public class UserController {
             ,HttpStatus.OK);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createUser(@RequestBody UserDto userDto){
+    @PostMapping()
+    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
         User userSave = null;
         try {
             userSave = userService.save(userDto);
+            // Respuesta exitosa con el código HTTP 201 (CREATED)
             return new ResponseEntity<>(
-                            MessageResponse.builder()
-                                .message("User Save")
-                                .object(UserDto.builder()
+                    MessageResponse.builder()
+                            .message("User created successfully")
+                            .object(UserDto.builder()
                                     .id(userSave.getId())
                                     .name(userSave.getName())
                                     .email(userSave.getEmail())
@@ -73,20 +73,25 @@ public class UserController {
                                     .telefono(userSave.getTelefono())
                                     .edad(userSave.getEdad())
                                     .build())
-                                .build()
-                            ,HttpStatus.CREATED); 
-            
+                            .build(),
+                    HttpStatus.CREATED);
         } catch (DataAccessException exDt) {
+            // Manejo de error, mejor usar 500 o 400 en vez de 405 (METHOD_NOT_ALLOWED)
             return new ResponseEntity<>(
-                            MessageResponse.builder()
-                                        .message(exDt.getMessage())
-                                        .object(null)
-                                        .build()
-                            ,HttpStatus.METHOD_NOT_ALLOWED);
+                    MessageResponse.builder()
+                            .message("Error saving user: " + exDt.getMessage())
+                            .object(null)
+                            .build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR); // O BAD_REQUEST dependiendo del error
+        } catch (Exception ex) {
+            // Captura general de excepciones para manejar errores no anticipados
+            return new ResponseEntity<>(
+                    MessageResponse.builder()
+                            .message("Unexpected error: " + ex.getMessage())
+                            .object(null)
+                            .build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-         
-
     }
 
     @PutMapping("/{id}")

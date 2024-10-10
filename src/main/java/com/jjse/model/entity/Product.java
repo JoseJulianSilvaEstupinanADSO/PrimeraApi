@@ -2,6 +2,8 @@ package com.jjse.model.entity;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,5 +39,6 @@ public class Product implements Serializable {
     private Integer stock;
     @ManyToOne
     @JoinColumn(name = "talla_id")  // Columna que representa la relación con la talla
+    @JsonManagedReference
     private Talla talla;  // Relación con Talla
 }

@@ -2,10 +2,10 @@ package com.jjse.model.dto;
 
 
 import java.io.Serializable;
-
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.jjse.model.entity.Rol;
 
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +24,6 @@ public class UserDto implements Serializable {
 
     private String user;
 
-    @JsonIgnore
     private String password;
 
     private String documento;
@@ -32,6 +31,8 @@ public class UserDto implements Serializable {
     private String telefono;
 
     private String edad;
+
+    private List<Integer> roles;
     
     
 }
